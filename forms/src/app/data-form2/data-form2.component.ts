@@ -50,6 +50,7 @@ export class DataForm2Component implements OnInit {
     this.newslettersOptions = this.dropdownService.getNewsletter();
 
     this.formulario = this.formBuilder.group({
+
       nome: [null,
         /** adicionando validações no campo NOME */
         [Validators.required, Validators.minLength(3), Validators.maxLength(40)]
@@ -58,10 +59,13 @@ export class DataForm2Component implements OnInit {
         /** adicionando validações no campo EMAIL */
         [Validators.required, Validators.email] /* usando mais de uma validação, colocar em [] */
       ],
+      confirmarEmail: [null,
+        [FormValidations.equalsTo('email')]
+      ],
 
       /** agrupar campos para dentro de 'endereco' */
       endereco: this.formBuilder.group({
-        cep: [null, Validators.required],
+        cep: [null, [Validators.required, FormValidations.cepValidator]],
         numero: [null, Validators.required],
         complemento: [null],
         rua: [null, Validators.required],
@@ -80,9 +84,8 @@ export class DataForm2Component implements OnInit {
 
   buildFrameworks() {
     const values = this.frameworks.map(v => new FormControl(false));
-    return this.formBuilder.array(values);
+    return this.formBuilder.array(values, FormValidations.requiredMinCheckbox(1));
   }
-
 
   onSubmit() {
     console.log(this.formulario);
@@ -198,6 +201,15 @@ export class DataForm2Component implements OnInit {
   setarTecnologias() {
     const tecnologias = ['java', 'javascript', 'spa'];
     this.formulario.get('tecnologias').setValue(tecnologias);
+  }
+
+
+
+  verificaRequired(campo: string) {
+    return (
+      this.formulario.get(campo).hasError('required') &&
+      (this.formulario.get(campo).touched || this.formulario.get(campo).dirty)
+    );
   }
 
 }
