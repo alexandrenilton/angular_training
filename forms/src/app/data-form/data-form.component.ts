@@ -36,7 +36,7 @@ export class DataFormComponent extends BaseFormComponent implements OnInit {
     private verificaEmailService: VerificaEmailService
   ) {
     super();
-   }
+  }
 
   ngOnInit() {
 
@@ -97,17 +97,17 @@ export class DataFormComponent extends BaseFormComponent implements OnInit {
       )
       .subscribe(dados => dados ? this.populaDadosForm(dados) : {});
 
-      this.formulario.get('endereco.estado').valueChanges
-        .pipe(
-          tap(estado => console.log('Novo estado: ', estado)),
-          map(estado => this.estados.filter(e => e.sigla === estado)),
-          map(estados => estados && estados.length > 0 ? estados[0].id : empty()),
-          switchMap((estadoId: number) => this.dropdownService.getCidades(estadoId)),
-          tap(console.log)
-        )
-        .subscribe(cidades => this.cidades = cidades);
+    this.formulario.get('endereco.estado').valueChanges
+      .pipe(
+        tap(estado => console.log('Novo estado: ', estado)),
+        map(estado => this.estados.filter(e => e.sigla === estado)),
+        map(estados => estados && estados.length > 0 ? estados[0].id : empty()),
+        switchMap((estadoId: number) => this.dropdownService.getCidades(estadoId)),
+        tap(console.log)
+      )
+      .subscribe(cidades => this.cidades = cidades);
 
-      // this.dropdownService.getCidades(8).subscribe(console.log);
+    // this.dropdownService.getCidades(8).subscribe(console.log);
 
     // tslint:disable-next-line:max-line-length
     // Validators.pattern("[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?")
@@ -132,23 +132,23 @@ export class DataFormComponent extends BaseFormComponent implements OnInit {
 
     valueSubmit = Object.assign(valueSubmit, {
       frameworks: valueSubmit.frameworks
-      .map((v, i) => v ? this.frameworks[i] : null)
-      .filter(v => v !== null)
+        .map((v, i) => v ? this.frameworks[i] : null)
+        .filter(v => v !== null)
     });
 
     console.log(valueSubmit);
 
     this.http
-        .post('https://httpbin.org/post', JSON.stringify({}))
-        .subscribe(
-          dados => {
-            console.log(dados);
-            // reseta o form
-            // this.formulario.reset();
-            // this.resetar();
-          },
-          (error: any) => alert('erro')
-        );
+      .post('https://httpbin.org/post', JSON.stringify({}))
+      .subscribe(
+        dados => {
+          //console.log(dados);
+          // reseta o form
+          // this.formulario.reset();
+          // this.resetar();
+        },
+        (error: any) => alert('erro')
+      );
   }
 
   consultaCEP() {
@@ -156,7 +156,7 @@ export class DataFormComponent extends BaseFormComponent implements OnInit {
 
     if (cep != null && cep !== '') {
       this.cepService.consultaCEP(cep)
-      .subscribe(dados => this.populaDadosForm(dados));
+        .subscribe(dados => this.populaDadosForm(dados));
     }
   }
 

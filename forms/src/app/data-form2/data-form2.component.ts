@@ -6,6 +6,7 @@ import { EstadoBr } from './../shared/models/estado-br.model';
 import { DropdownService } from './../shared/services/dropdown.service';
 import { Observable, empty } from 'rxjs';
 import { FormValidations } from '../shared/form-validations';
+import { VerificaEmailService2 } from './services/verifica-email2.service';
 import { map, filter, switchMap, distinctUntilChanged, tap } from 'rxjs/operators'
 import { BaseFormComponent } from '../shared/base-form/base-form.component';
 import { Cidade } from '../shared/models/cidade';
@@ -30,6 +31,7 @@ export class DataForm2Component implements OnInit {
     private formBuilder: FormBuilder,
     private http: HttpClient,
     private cepService: ConsultaCepService,
+    private verificaEmailService: VerificaEmailService2,
     private dropdownService: DropdownService
   ) { }
 
@@ -50,14 +52,14 @@ export class DataForm2Component implements OnInit {
     this.newslettersOptions = this.dropdownService.getNewsletter();
 
     this.formulario = this.formBuilder.group({
-
       nome: [null,
         /** adicionando validações no campo NOME */
         [Validators.required, Validators.minLength(3), Validators.maxLength(40)]
       ],
       email: [null,
         /** adicionando validações no campo EMAIL */
-        [Validators.required, Validators.email] /* usando mais de uma validação, colocar em [] */
+        [Validators.required, Validators.email], /* validações sincronas: usando mais de uma validação, colocar em [] */
+        [this.validarEmail.bind(this)] /*validações assincronas*/
       ],
       confirmarEmail: [null,
         [FormValidations.equalsTo('email')]
@@ -140,7 +142,7 @@ export class DataForm2Component implements OnInit {
   }
 
   verificaEmailInvalido() {
-    console.log('Verifica email invalido!');
+    // console.log('Verifica email invalido!');
     const campoEmail = this.formulario.get('email');
     if (campoEmail.errors) {
       return campoEmail.errors['email'] && campoEmail.touched;
@@ -210,6 +212,11 @@ export class DataForm2Component implements OnInit {
       this.formulario.get(campo).hasError('required') &&
       (this.formulario.get(campo).touched || this.formulario.get(campo).dirty)
     );
+  }
+
+  validarEmail(formControl: FormControl) {
+    return this.verificaEmailService.verificarEmail(formControl.value)
+      .pipe(map(emailExiste => emailExiste ? { emailInvalido: true } : null));
   }
 
 }

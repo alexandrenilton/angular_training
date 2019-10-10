@@ -6,8 +6,8 @@
     </div>
     <div class="col-sm-12">
       <input type="text" class="form-control" formControlName="nome" id="nome" placeholder="Nome" required>
-      <app-campo-control-erro [mostrarErro]="verificaRequired('nome')" msgErro="Nome é obrigatório.">
-      </app-campo-control-erro>
+      <app-error-msg [control]="formulario.get('nome')" label="Nome">
+      </app-error-msg>
     </div>
   </div>
 
@@ -21,6 +21,13 @@
       <app-campo-control-erro [mostrarErro]="verificaRequired('email')" msgErro="Email é obrigatório.">
       </app-campo-control-erro>
       <app-campo-control-erro [mostrarErro]="verificaEmailInvalido()" msgErro="Email é inválido.">
+      </app-campo-control-erro>
+      <app-campo-control-erro [mostrarErro]="formulario.get('email').status === 'PENDING'" msgErro="Validando email...">
+      </app-campo-control-erro>
+      <app-campo-control-erro [mostrarErro]="formulario.get('email').status === 'VALID'" msgErro="Email válido!">
+      </app-campo-control-erro>
+      <app-campo-control-erro [mostrarErro]="formulario.get('email').hasError('emailInvalido')"
+        msgErro="Email já cadastrado!">
       </app-campo-control-erro>
     </div>
   </div>
