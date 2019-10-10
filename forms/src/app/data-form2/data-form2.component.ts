@@ -82,6 +82,32 @@ export class DataForm2Component implements OnInit {
       frameworks: this.buildFrameworks()
     });
 
+    /* toda vez q o campo cep foi alterado vai executar*/
+    // this.formulario.get('endereco.cep').valueChanges
+    //   .subscribe(value => console.log('valor CEP: ', value));
+    /* toda vez q o campo cep for alterado, ele verifica o status*/
+    // this.formulario.get('endereco.cep').statusChanges
+    //   .pipe(
+    //     distinctUntilChanged(), /*captura o valor apenas qd ele for mudado.. ele começa INVALID e muda pra VALID qd temos 8 posicoes*/
+    //     tap(value => console.log('valor CEP: ', value))
+    //   )
+    //   .subscribe(status => {
+    //     if (status === 'VALID') {
+    //       this.cepService.consultaCEP(this.formulario.get('endereco.cep').value)
+    //         .subscribe(dados => this.populaDadosForm(dados));
+    //     }
+    //   });
+    // FORMA USANDO SWITCH_MAP
+    this.formulario.get('endereco.cep').statusChanges
+      .pipe(
+        distinctUntilChanged(),
+        tap(value => console.log('status CEP .: ', value)),
+        switchMap(status => status === 'VALID' ?
+          this.cepService.consultaCEP(this.formulario.get('endereco.cep').value)
+          : empty()
+        )
+      )
+      .subscribe(dados => dados ? this.populaDadosForm(dados) : {});
   }
 
   buildFrameworks() {
@@ -128,8 +154,6 @@ export class DataForm2Component implements OnInit {
       });
   }
 
-
-
   aplicaCssErro(campo: string) {
     return {
       'has-error': this.verificaValidTouched(campo),
@@ -150,15 +174,15 @@ export class DataForm2Component implements OnInit {
     return false;
   }
 
-  consultaCEP() {
-    let cep = this.formulario.get('endereco.cep').value;
+  // consultaCEP() {
+  //   let cep = this.formulario.get('endereco.cep').value;
 
-    if (cep != null && cep !== '') {
-      this.cepService.consultaCEP(cep)
-        .subscribe(dados => this.populaDadosForm(dados));
-      // this.setarMeuNomeUsandoSingleSetValue();
-    }
-  }
+  //   if (cep != null && cep !== '') {
+  //     this.cepService.consultaCEP(cep)
+  //       .subscribe(dados => this.populaDadosForm(dados));
+  //     // this.setarMeuNomeUsandoSingleSetValue();
+  //   }
+  // }
 
   resetaDadosForm() {
     this.formulario.patchValue({
@@ -199,13 +223,10 @@ export class DataForm2Component implements OnInit {
       : obj1 === obj2;
   }
 
-
   setarTecnologias() {
     const tecnologias = ['java', 'javascript', 'spa'];
     this.formulario.get('tecnologias').setValue(tecnologias);
   }
-
-
 
   verificaRequired(campo: string) {
     return (
