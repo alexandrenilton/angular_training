@@ -20,6 +20,7 @@ export class InputFieldComponent implements ControlValueAccessor {
   @Input() label: string;
   @Input() type = 'text';
   @Input() control;
+
   @Input() isReadOnly = false;
 
   private innerValue: any;
@@ -35,11 +36,13 @@ export class InputFieldComponent implements ControlValueAccessor {
     }
   }
 
-  onChangeCb: (_: any) => void = () => {};
-  onTouchedCb: (_: any) => void = () => {};
+  onChangeCb: (_: any) => void = () => { };
+  onTouchedCb: (_: any) => void = () => { };
 
+
+  /** os 4 metodos obrigatorios da interface ControlValueAccessor */
   writeValue(v: any): void {
-    this.value = v;
+    this.value = v; // vai chamar: set value(v)
   }
 
   registerOnChange(fn: any): void {

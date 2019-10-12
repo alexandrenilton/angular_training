@@ -16,9 +16,13 @@ import { Cidade } from '../shared/models/cidade';
   templateUrl: './data-form2.component.html',
   styleUrls: ['./data-form2.component.css']
 })
-export class DataForm2Component implements OnInit {
+export class DataForm2Component extends BaseFormComponent implements OnInit {
 
-  formulario: FormGroup;
+  submit() {
+    throw new Error("Method not implemented.");
+  }
+
+  // formulario: FormGroup;
   // estados: EstadoBr[];
   estados: Observable<EstadoBr[]>; /** para evitar memory leak */
   cargos: any[];
@@ -33,7 +37,9 @@ export class DataForm2Component implements OnInit {
     private cepService: ConsultaCepService,
     private verificaEmailService: VerificaEmailService2,
     private dropdownService: DropdownService
-  ) { }
+  ) {
+    super(); /** chamar o construtor da classe mae! */
+  }
 
   ngOnInit() {
     /* Carregar <select> de estados */
