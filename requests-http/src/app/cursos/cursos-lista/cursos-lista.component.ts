@@ -67,7 +67,6 @@ export class CursosListaComponent implements OnInit {
       );
   }
 
-
   handleError() {
     // this.bsModalRef = this.modalService.show(AlertModalComponent);
     // // atraves da referencia, é possivel passar as InputProperties (@Input())
