@@ -1,8 +1,8 @@
 import { AlertModalService } from './../../shared/alert-modal.service';
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { Curso } from '../curso';
-import { Observable, empty, Subject } from 'rxjs';
-import { catchError } from 'rxjs/operators';
+import { Observable, empty, Subject, EMPTY } from 'rxjs';
+import { catchError, take, switchMap } from 'rxjs/operators';
 import { BsModalService, BsModalRef } from 'ngx-bootstrap/modal';
 
 import { CursosService } from './../cursos.service';
@@ -19,12 +19,18 @@ export class CursosListaComponent implements OnInit {
   // bsModalRef: BsModalRef;
 
   // cursos: Curso[];
+
+  deleteModalRef: BsModalRef;
+  @ViewChild('deleteModal', { static: true }) deleteModal; // refere-sse a um component do html.. do ng-template
+
   cursos$: Observable<Curso[]>;
   error$ = new Subject<boolean>();
 
+  cursoSelected: Curso; // curso selecionado para deletar..
+
   constructor(
     private service: CursosService,
-    // private modalService: BsModalService
+    private modalService: BsModalService,
     private alertService: AlertModalService,
     private router: Router, // para atualizar e excluir..
     private route: ActivatedRoute
@@ -84,5 +90,45 @@ export class CursosListaComponent implements OnInit {
     this.router.navigate(['editar', id], { relativeTo: this.route });
   }
 
-  onDelete(id: number) {}
+  onDelete(curso: Curso) {
+    this.cursoSelected = curso;
+    // https://valor-software.com/ngx-bootstrap/#/modals
+    // this.deleteModalRef = this.modalService.show(this.deleteModal, { class: 'modal-sm' });
+    const result$ = this.alertService.showConfirm(
+      'Confirmação',
+      'Tem certeza que deseja excluir esse curso?'
+    );
+
+    result$
+      .asObservable()
+      .pipe(
+        take(1),
+        switchMap(result => (result ? this.service.remove(curso) : EMPTY))
+      )
+      .subscribe(
+        success => this.onRefresh(),
+        error =>
+          this.alertService.showAlertDanger(
+            'Erro inesperado ao remover curso, tente novamente mais tarde!'
+          )
+      );
+  }
+
+  onConfirmDelete() {
+    this.service.remove(this.cursoSelected).subscribe(
+      // atualiza a tela
+      success => this.onRefresh(),
+      error =>
+        this.alertService.showAlertDanger(
+          'Erro inesperado ao remover curso, tente novamente mais tarde!'
+        )
+    );
+
+    // ao fim. esconde o modal
+    this.deleteModalRef.hide();
+  }
+
+  onDeclineDelete() {
+    this.deleteModalRef.hide();
+  }
 }

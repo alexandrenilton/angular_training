@@ -1,3 +1,4 @@
+import { BsModalService, BsModalRef } from 'ngx-bootstrap/modal';
 import { AlertModalService } from './../../shared/alert-modal.service';
 import { CursosService } from './../cursos.service';
 import { Component, OnInit } from '@angular/core';
@@ -14,13 +15,15 @@ import { map, switchMap } from 'rxjs/operators';
 export class CursosFormComponent implements OnInit {
   form: FormGroup;
   submitted = false; // pra saber se o form foi submetido ou não
+  bsModalRef: BsModalRef;
 
   constructor(
     private fb: FormBuilder,
     private service: CursosService,
     private modal: AlertModalService,
     private location: Location,
-    private route: ActivatedRoute // classe que contem os parametros da rota..
+    private route: ActivatedRoute, // classe que contem os parametros da rota..
+    private modalService: BsModalService
   ) {}
 
   ngOnInit() {
@@ -34,33 +37,38 @@ export class CursosFormComponent implements OnInit {
     //   });
     // });
     // refactoring do codigo acima..
-    this.route.params
-      .pipe(
-        map((params: any) => params['id']),
-        switchMap(id => this.service.loadById(id))
-      )
-      .subscribe(curso => {
-        this.updateForm(curso);
-      });
+
+    // tudo no resolver agora..
+    // this.route.params
+    //   .pipe(
+    //     map((params: any) => params['id']),
+    //     switchMap(id => this.service.loadById(id))
+    //   )
+    //   .subscribe(curso => {
+    //     this.updateForm(curso);
+    //   });
     // concatMap -> ordem da requisição importa
     // mergeMap -> ordem da requisição não importa
     // exhaustMap -> faz a requisição do pedido e espera terminar ate fazer o outro. Usados em Login
 
+    // vai buscar na 'foto' da rota
+    const curso = this.route.snapshot.data['curso'];
+
     this.form = this.fb.group({
-      id: [null],
+      id: [curso.id],
       nome: [
-        null,
+        curso.nome,
         [Validators.required, Validators.minLength(3), Validators.maxLength(20)]
       ]
     });
   }
 
-  updateForm(curso) {
-    this.form.patchValue({
-      nome: curso.nome,
-      id: curso.id
-    });
-  }
+  // updateForm(curso) {
+  //   this.form.patchValue({
+  //     nome: curso.nome,
+  //     id: curso.id
+  //   });
+  // }
 
   hasError(testField: string) {
     return this.form.get(testField).errors;
@@ -70,21 +78,18 @@ export class CursosFormComponent implements OnInit {
     this.submitted = true;
     console.log(this.form.value);
     if (this.form.valid) {
-      console.log('submit');
-      // chamada ao serviço
-      this.service.create(this.form.value).subscribe(
+      // save
+      this.service.save(this.form.value).subscribe(
         success => {
-          console.log('sucesso');
-          this.modal.showAlertSuccess('Curso gravado com sucesso!');
+          this.modal.showAlertSuccess('Curso registrado com sucesso!');
           this.location.back(); // mesma coisa de clicar no botao de voltar do browser
         },
         failure => {
-          console.error(failure);
           this.modal.showAlertDanger(
-            'Erro ao tentar gravar novo curso na base de dados'
+            'Erro ao tentar gravar atualizar curso na base de dados'
           );
-        },
-        () => console.log('Request completed!')
+        }
+        // () => console.log('Request completed!')
       );
     }
   }

@@ -20,10 +20,26 @@ export class CursosService {
   }
 
   loadById(id) {
-    return this.http.get(`${this.API}/${id}`).pipe(take(1));
+    return this.http.get<Curso>(`${this.API}/${id}`).pipe(take(1));
   }
 
-  create(curso: Curso) {
+  private create(curso: Curso) {
     return this.http.post(this.API, curso).pipe(take(1));
+  }
+
+  private update(curso: Curso) {
+    return this.http.put(`${this.API}/${curso.id}`, curso).pipe(take(1));
+  }
+
+  save(curso: Curso) {
+    if (curso.id) {
+      return this.update(curso);
+    } else {
+      return this.create(curso);
+    }
+  }
+
+  remove(curso: Curso) {
+    return this.http.delete(`${this.API}/${curso.id}`).pipe(take(1));
   }
 }
