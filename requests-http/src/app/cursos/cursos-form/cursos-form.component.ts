@@ -1,3 +1,4 @@
+import { Cursos2Service } from './../cursos2.service';
 import { BsModalService, BsModalRef } from 'ngx-bootstrap/modal';
 import { AlertModalService } from './../../shared/alert-modal.service';
 import { CursosService } from './../cursos.service';
@@ -19,7 +20,7 @@ export class CursosFormComponent implements OnInit {
 
   constructor(
     private fb: FormBuilder,
-    private service: CursosService,
+    private service: Cursos2Service,
     private modal: AlertModalService,
     private location: Location,
     private route: ActivatedRoute, // classe que contem os parametros da rota..

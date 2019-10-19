@@ -1,3 +1,4 @@
+import { Cursos2Service } from './../cursos2.service';
 import { AlertModalService } from './../../shared/alert-modal.service';
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { Curso } from '../curso';
@@ -29,7 +30,7 @@ export class CursosListaComponent implements OnInit {
   cursoSelected: Curso; // curso selecionado para deletar..
 
   constructor(
-    private service: CursosService,
+    private service: Cursos2Service,
     private modalService: BsModalService,
     private alertService: AlertModalService,
     private router: Router, // para atualizar e excluir..
