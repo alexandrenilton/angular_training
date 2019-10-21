@@ -5,7 +5,7 @@ const routes: Routes = [
   {
     path: '',
     pathMatch: 'full',
-    redirectTo: 'upload' /* redirect para n perder tempo */
+    redirectTo: 'busca-reativa' /* redirect para n perder tempo */
   },
   {
     path: 'cursos',
@@ -23,11 +23,14 @@ const routes: Routes = [
       import('./unsubscribe-rxjs/unsubscribe-rxjs.module').then(
         m => m.UnsubscribeRxjsModule
       )
+  },
+  {
+    path: 'busca-reativa',
+    loadChildren: () =>
+      import('./reactive-search/reactive-search.module').then(
+        m => m.ReactiveSearchModule
+      )
   }
-  // {
-  //   path: 'busca-reativa',
-  //   loadChildren: () => import('./reactive-search/reactive-search.module').then(m => m.ReactiveSearchModule)
-  // }
 ];
 
 @NgModule({

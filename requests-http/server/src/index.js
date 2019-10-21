@@ -15,10 +15,21 @@ app.use(bodyParser.urlencoded({ entended: true}));
 // app.use(cors(corsOptions));
 const multipartMiddleware = multipart( { uploadDir: './uploads'})
 
+// POST -> UPLOAD de ARQUIVOS
 app.post('/upload', multipartMiddleware, (req, res) => {
   const files = req.files;
   console.log(files);
   res.json({ message: files });
+});
+
+// GET -> DOWNLOAD EXCEL
+app.get('/downloadExcel', (req, res) => {
+  res.download('./uploads/report.xls');
+});
+
+// GET -> DOWNLOAD PDF
+app.get('/downloadPdf', (req, res) => {
+  res.download('./uploads/report.pdf');
 });
 
 /* caso ocorra algum erro*/
