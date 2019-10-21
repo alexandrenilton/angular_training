@@ -2,6 +2,7 @@ import { environment } from './../../../environments/environment';
 import { Component, OnInit } from '@angular/core';
 import { UploadFileService } from './upload-file.service';
 import { HttpEventType, HttpEvent } from '@angular/common/http';
+import { uploadProgress, filterResponse } from 'src/app/shared/rxjs-operators';
 
 @Component({
   selector: 'app-upload-file',
@@ -39,20 +40,30 @@ export class UploadFileComponent implements OnInit {
     if (this.files && this.files.size > 0) {
       this.uploadFileService
         .upload(this.files, environment.BASE_URL + '/upload')
-        .subscribe((event: HttpEvent<Object>) => {
-          // HttpEventType;
-          // console.log(event);
+        .pipe(
+          // uploadProgress e filterResponse são operadores customizados do rxjs
+          uploadProgress(progress => {
+            console.log(progress);
+            this.progress = progress;
+          }),
+          filterResponse()
+        )
+        .subscribe(response => console.log('upload concluído com sucesso!'));
 
-          if (event.type === HttpEventType.Response) {
-            // foi concluido..
-            console.log('upload concluido!');
-          } else if (event.type === HttpEventType.UploadProgress) {
-            // recebendo upload do arquivo ainda..
-            const percentDone = Math.round((event.loaded * 100) / event.total);
-            // console.log('Progresso', percentDone);
-            this.progress = percentDone;
-          }
-        });
+      // .subscribe((event: HttpEvent<Object>) => {
+      //   // HttpEventType;
+      //   // console.log(event);
+
+      //   if (event.type === HttpEventType.Response) {
+      //     // foi concluido..
+      //     // console.log('upload concluido!');
+      //   } else if (event.type === HttpEventType.UploadProgress) {
+      //     // recebendo upload do arquivo ainda..
+      //     const percentDone = Math.round((event.loaded * 100) / event.total);
+      //     // console.log('Progresso', percentDone);
+      //     this.progress = percentDone;
+      //   }
+      // });
     }
   }
 }
