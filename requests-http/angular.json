@@ -42,13 +42,8 @@
             "polyfills": "src/polyfills.ts",
             "tsConfig": "tsconfig.app.json",
             "aot": false,
-            "assets": [
-              "src/favicon.ico",
-              "src/assets"
-            ],
-            "styles": [
-              "src/styles.scss"
-            ],
+            "assets": ["src/favicon.ico", "src/assets"],
+            "styles": ["src/styles.scss"],
             "scripts": []
           },
           "configurations": {
@@ -63,11 +58,11 @@
               "outputHashing": "all",
               "sourceMap": false,
               "extractCss": true,
-              "namedChunks": false,
+              "namedChunks": false /* renomear tudo, por segurança */,
               "aot": true,
-              "extractLicenses": true,
+              "extractLicenses": true /* extrai as licenças de libs terceiras*/,
               "vendorChunk": false,
-              "buildOptimizer": true,
+              "buildOptimizer": true /* deixa build mais enxuto, so oque for usar*/,
               "budgets": [
                 {
                   "type": "initial",
@@ -107,13 +102,8 @@
             "polyfills": "src/polyfills.ts",
             "tsConfig": "tsconfig.spec.json",
             "karmaConfig": "karma.conf.js",
-            "assets": [
-              "src/favicon.ico",
-              "src/assets"
-            ],
-            "styles": [
-              "src/styles.scss"
-            ],
+            "assets": ["src/favicon.ico", "src/assets"],
+            "styles": ["src/styles.scss"],
             "scripts": []
           }
         },
@@ -125,9 +115,7 @@
               "tsconfig.spec.json",
               "e2e/tsconfig.json"
             ],
-            "exclude": [
-              "**/node_modules/**"
-            ]
+            "exclude": ["**/node_modules/**"]
           }
         },
         "e2e": {
@@ -143,6 +131,7 @@
           }
         }
       }
-    }},
+    }
+  },
   "defaultProject": "requests-http"
 }
